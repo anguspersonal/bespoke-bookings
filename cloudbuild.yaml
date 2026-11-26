@@ -1,0 +1,59 @@
+steps:
+  # Step 1: Install dependencies using pnpm
+  - name: 'node:20'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        corepack enable
+        corepack prepare pnpm@10.28.0 --activate
+        pnpm install --frozen-lockfile
+
+  # Step 2: Run linter and type-checks via Turborepo
+  - name: 'node:20'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        corepack enable
+        corepack prepare pnpm@10.28.0 --activate
+        pnpm check-types
+
+  # Step 3: Build Docker container image for Cloud Run
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'europe-west2-docker.pkg.dev/$PROJECT_ID/bespoke-bookings/platform:$BUILD_ID'
+      - '-t'
+      - 'europe-west2-docker.pkg.dev/$PROJECT_ID/bespoke-bookings/platform:latest'
+      - '-f'
+      - 'apps/platform/Dockerfile'
+      - '.'
+
+  # Step 4: Push image to GCP Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'europe-west2-docker.pkg.dev/$PROJECT_ID/bespoke-bookings/platform:$BUILD_ID'
+
+  # Step 5: Deploy new revision to Google Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'bespoke-platform'
+      - '--image'
+      - 'europe-west2-docker.pkg.dev/$PROJECT_ID/bespoke-bookings/platform:$BUILD_ID'
+      - '--region'
+      - 'europe-west2'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+
+images:
+  - 'europe-west2-docker.pkg.dev/$PROJECT_ID/bespoke-bookings/platform:$BUILD_ID'
+  - 'europe-west2-docker.pkg.dev/$PROJECT_ID/bespoke-bookings/platform:latest'
+
+timeout: '900s'

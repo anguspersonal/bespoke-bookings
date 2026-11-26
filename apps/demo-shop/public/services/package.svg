@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="400" y2="240" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1c1914"/>
+      <stop offset="100%" stop-color="#0d0d10"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="240" fill="url(#bg)"/>
+  <circle cx="200" cy="108" r="54" fill="#d6af71" fill-opacity="0.1" stroke="#d6af71" stroke-opacity="0.45" stroke-width="1.5"/>
+  <path d="M178 122L182 96L193 107L200 90L207 107L218 96L222 122H178Z" fill="#d6af71"/>
+  <rect x="178" y="126" width="44" height="4" rx="2" fill="#d6af71"/>
+  <text x="200" y="196" text-anchor="middle" fill="#d6af71" font-family="system-ui, sans-serif" font-size="12" font-weight="700" letter-spacing="3">SIGNATURE PACKAGE</text>
+</svg>
